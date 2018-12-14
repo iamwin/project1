@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Super 后台</title>
+    <link rel="stylesheet" href="../resources/layui/css/layui.css">
+    <style type="text/css">
+        .layui-nav-item>.frist_accordion{
+            font-size: 16px;
+        }
+        .layui-header>.head_show{
+            line-height: 60px;
+            font-size: 12px;
+            position: absolute;
+            left: 220px;
+            top: 0;
+        }
+        .layui-header>.head_show>a:nth-child(1){
+            color: #888;
+        }
+        .layui-header>.head_show>a{
+            padding: 0 4px;
+            color: #fff;
+        }
+        .layui-header>.head_show>span{
+            color: #fff;
+        }
+        .layui-header>.head_show>a:hover{
+            color: rgb(0, 150, 136);
+        }
+    </style>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">Super 后台</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <!-- <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item">
+                    <a href="">控制台</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="">商品管理</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="">用户</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">其它系统</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="">邮件管理</a>
+                        </dd>
+                        <dd>
+                            <a href="">消息管理</a>
+                        </dd>
+                        <dd>
+                            <a href="">授权管理</a>
+                        </dd>
+                    </dl>
+                </li>
+            </ul> -->
+            
+            <!-- 面包屑 -->
+            <div class="head_show">
+                <a class="index" href="backstage.html">首页</a>
+                <span>/</span>
+                <a class="index" href="goodscategory.html">商品分类</a>
+                <span>/</span>
+            </div>
+            <ul class="layui-nav layui-layout-right">
+            <!-- 头像+退出按钮 -->
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">Siri
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="javascript:;">基本资料</a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;">安全设置</a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a class="log_out" href="javascript:;">退出</a>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                    <!-- 第一块 -->
+                        <a class="frist_accordion" href="javascript:;">商品管理</a>
+                        <dl class="layui-nav-child">
+                            <dd class="layui-this">
+                                <a class="goodscategory" href="goodscategory.html">商品分类</a>
+                            </dd>
+                            <dd>
+                                <a class="goodslist" href="goodslist.html">商品列表</a>
+                            </dd>
+                            <!-- <dd>
+                                <a href="javascript:;">列表三</a>
+                            </dd>
+                            <dd>
+                                <a href="">超链接</a>
+                            </dd> -->
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                    <!-- 第二块 -->
+                        <a class="frist_accordion" href="javascript:;">用户管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>
+                                <a class="userlist" href="userlist.html">用户列表</a>
+                            </dd>
+                            <!-- <dd>
+                                <a href="javascript:;">列表二</a>
+                            </dd>
+                            <dd>
+                                <a href="">超链接</a>
+                            </dd> -->
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a class="frist_accordion" href="javascript:;">订单管理</a>
+                        <dl class="layui-nav-child">
+                            <dd>
+                                <a class="orderlist" href="orderlist.html">订单列表</a>
+                            </dd>
+                        </dl>
+                    </li>
+                    <!-- <li class="layui-nav-item">
+                        <a href="">发布商品</a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+        <!-- 内容主体区域 -->
+            <div style="padding: 20px;">
+            <!-- 内容主体区域 -->
+                <table class="layui-hide" id="test" lay-filter="test"></table>
+            </div>
+        </div>
+
+        <div class="layui-footer">
+        <!-- 底部固定区域 -->
+            <div class="foot_time"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../resources/layui/layui.js"></script>
+    <script>
+        //JavaScript代码区域
+        layui.use('element', function(){
+            var element = layui.element;
+
+            var foot_time1 =  new Date().toLocaleDateString();//获取时间
+            var foot_time2 =  new Date().toLocaleTimeString();//获取时间
+            $('.foot_time').html('日期：'+foot_time1+'&nbsp&nbsp&nbsp&nbsp'+foot_time2);//显示时间
+            clearInterval(timer1);
+            var timer1 = setInterval(function(){
+                foot_time1 =  new Date().toLocaleDateString();//获取时间
+                foot_time2 =  new Date().toLocaleTimeString();//获取时间
+                $('.foot_time').html('日期：'+foot_time1+'&nbsp&nbsp&nbsp&nbsp'+foot_time2);//显示时间
+            },1000);
+
+            $('.log_out').click(function(){
+            //点击退出按钮
+            });
+        });
+        
+        layui.use('table', function(){
+            var table = layui.table;
+  
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:3008/goodscategory'
+            ,toolbar: '#toolbarDemo'
+            ,title: '用户数据表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'name', title:'商品分类', width:240, edit: 'text'}
+                // ,{field:'email', title:'邮箱', width:150, edit: 'text', templet: function(res){
+                //     return '<em>'+ res.email +'</em>'
+                // }}
+                // ,{field:'sex', title:'性别', width:80, edit: 'text', sort: true}
+                // ,{field:'city', title:'城市', width:100}
+                // ,{field:'sign', title:'签名'}
+                // ,{field:'experience', title:'积分', width:80, sort: true}
+                // ,{field:'ip', title:'IP', width:120}
+                // ,{field:'logins', title:'登入次数', width:100, sort: true}
+                ,{field:'time', title:'添加时间', width:120}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]]
+            ,page: true
+        });
+      
+          //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                break;
+            };
+        });
+      
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            }else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                layer.close(index);
+                });
+            }
+        });
+        });
+    </script>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        </div>
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+</body>
+</html>
