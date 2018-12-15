@@ -20,6 +20,9 @@
             padding: 0 4px;
             color: #fff;
         }
+        .layui-header .head_show .dark{
+            color: #888;
+        }
         .layui-header>.head_show>span{
             color: #fff;
         }
@@ -61,7 +64,9 @@
             
             <!-- 面包屑 -->
             <div class="head_show">
-                <a href="javascript:;">首页</a>
+                <a class="dark" href="backstage.html">首页</a>
+                <span>/</span>
+                <a href="goodslist.html">商品列表</a>
                 <span>/</span>
             </div>
             <ul class="layui-nav layui-layout-right">
@@ -93,17 +98,17 @@
                         <a class="frist_accordion" href="javascript:;">商品管理</a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a class="goodscategory" href="javascript:;">商品分类</a>
+                                <a class="goodscategory" href="goodscategory.html">商品分类</a>
                             </dd>
                             <dd class="layui-this">
-                                <a class="goodslist" href="javascript:;">商品列表</a>
-                            </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表三</a>
+                                <a class="goodslist" href="goodslist.html">商品列表</a>
                             </dd>
                             <dd>
-                                <a href="">超链接</a>
-                            </dd> -->
+                                <a href="addgoods.html">添加商品</a>
+                            </dd>
+                            <dd>
+                                <a href="addcategory.html">添加分类</a>
+                            </dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item">
@@ -111,12 +116,12 @@
                         <a class="frist_accordion" href="javascript:;">用户管理</a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a class="userlist" href="javascript:;">用户列表</a>
-                            </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表二</a>
+                                <a class="userlist" href="userlist.html">用户列表</a>
                             </dd>
                             <dd>
+                                <a href="addusers.html">添加用户</a>
+                            </dd>
+                            <!-- <dd>
                                 <a href="">超链接</a>
                             </dd> -->
                         </dl>
@@ -125,7 +130,7 @@
                         <a class="frist_accordion" href="javascript:;">订单管理</a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a class="orderlist" href="javascript:;">订单列表</a>
+                                <a class="orderlist" href="orderlist.html">订单列表</a>
                             </dd>
                         </dl>
                     </li>
@@ -140,7 +145,7 @@
         <!-- 内容主体区域 -->
             <div style="padding: 20px;">
             <!-- 内容主体区域 -->
-                
+                <table class="layui-hide" id="test" lay-filter="test"></table>
             </div>
         </div>
 
@@ -152,6 +157,16 @@
     
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="../resources/layui/layui.js"></script>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <button class="layui-btn layui-btn-sm addgoods">
+        <a href="addgoods.html" style="color:#fff">添加商品</a></button>
+    </script>
+
     <script>
         //JavaScript代码区域
         layui.use('element', function(){
@@ -171,32 +186,126 @@
             //点击退出按钮
             });
 
-            $('.body_top').find('div').click(function(){
-            //body区右侧菜单
-                $('.body_top').find('div').css('border-bottom','4px solid #fff')
-                $(this).css('border-bottom','6px solid #009688')
-            });
-
-            //跳转商品分类页面
-            $('.goodscategory').click(function(){
-                location.href = 'goodscategory.html'
-            })
-
-            //跳转商品列表页面
-            $('.goodslist').click(function(){
-                location.href = 'goodslist.html'
-            })
-
-            //跳转用户列表页面
-            $('.userlist').click(function(){
-                location.href = 'userlist.html'
-            })
-
-            //跳转订单列表页面
-            $('.orderlist').click(function(){
-                location.href = 'orderlist.html'
-            })
+            layui.use('table', function(){
+            var table = layui.table;
+  
+        table.render({
+            elem: '#test'
+            ,url:'http://localhost:3008/goodslist'
+            ,toolbar: '#toolbarDemo'
+            ,title: '用户数据表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'name', title:'商品名称', width:220, edit: 'text'}
+                ,{field:'category', title:'分类', width:80, edit: 'text'}
+                ,{field:'oldprice', title:'原价', width:80, sort: true}
+                ,{field:'newprice', title:'现价', width:80, sort: true}
+                ,{field:'number', title:'库存', width:80}
+                ,{field:'stage', title:'状态', width:80}
+                // ,{field:'email', title:'邮箱', width:150, edit: 'text', templet: function(res){
+                //     return '<em>'+ res.email +'</em>'
+                // }}
+                // ,{field:'city', title:'城市', width:100}
+                // ,{field:'sign', title:'签名'}
+                // ,{field:'experience', title:'积分', width:80, sort: true}
+                // ,{field:'ip', title:'IP', width:120}
+                // ,{field:'logins', title:'登入次数', width:100, sort: true}
+                ,{field:'time', title:'添加时间', width:110}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:180}
+            ]]
+            ,page: true
         });
+      
+          //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                break;
+            };
+        });
+      
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('您真的要删除此商品吗？', function(index){
+                    obj.del();
+                    layer.close(index);
+
+                    //删除当行
+                    $.ajax({
+                        type:'get',
+                        url:'http://localhost:3008/_del',
+                        async:true,
+                        data:{
+                            'id':obj.data.id,
+                        },
+                        success:function(str){
+                            // console.log(str);
+                        }
+                    });
+
+                });
+            }else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.name
+                }, function(value, index){
+                    obj.update({
+                        name: value
+                    });
+                layer.close(index);
+
+                //修改数据库
+                var edit_time = new Date().toLocaleDateString();
+                // console.log(value,edit_time,obj.data.id);
+                $.ajax({
+                    type:'get',
+                    url:'http://localhost:3008/_edit',
+                    async:true,
+                    data:{
+                        'id':obj.data.id,
+                        'name':value,
+                        'time':edit_time
+                    },
+                    success:function(str){
+                        console.log(str);
+                    }
+                });
+
+                });
+            }
+        });
+        });
+        });
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="change">上/下架</a>
+    </script>
+
+    <!-- 上/下架操作 -->
+    <script type="text/javascript">
+        let num1=0;
+        $('.change').click(function(){
+            num1++;
+            console.log(num1);
+        })
+
     </script>
 </body>
 </html>

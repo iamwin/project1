@@ -16,7 +16,7 @@
             left: 220px;
             top: 0;
         }
-        .layui-header>.head_show>a:nth-child(1){
+        .layui-header .head_show .dark{
             color: #888;
         }
         .layui-header>.head_show>a{
@@ -64,9 +64,9 @@
             
             <!-- 面包屑 -->
             <div class="head_show">
-                <a class="index" href="backstage.html">首页</a>
+                <a class="dark" href="backstage.html">首页</a>
                 <span>/</span>
-                <a class="index" href="goodscategory.html">商品分类</a>
+                <a href="goodscategory.html">商品分类</a>
                 <span>/</span>
             </div>
             <ul class="layui-nav layui-layout-right">
@@ -103,12 +103,12 @@
                             <dd>
                                 <a class="goodslist" href="goodslist.html">商品列表</a>
                             </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表三</a>
+                            <dd>
+                                <a href="addgoods.html">添加商品</a>
                             </dd>
                             <dd>
-                                <a href="">超链接</a>
-                            </dd> -->
+                                <a href="addcategory.html">添加分类</a>
+                            </dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item">
@@ -118,10 +118,10 @@
                             <dd>
                                 <a class="userlist" href="userlist.html">用户列表</a>
                             </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表二</a>
-                            </dd>
                             <dd>
+                                <a href="addusers.html">添加用户</a>
+                            </dd>
+                            <!-- <dd>
                                 <a href="">超链接</a>
                             </dd> -->
                         </dl>
@@ -157,6 +157,15 @@
     
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="../resources/layui/layui.js"></script>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <button class="layui-btn layui-btn-sm addgoods"><a href="addcategory.html" style="color:#fff">添加分类</a></button>
+    </script>
+
     <script>
         //JavaScript代码区域
         layui.use('element', function(){
@@ -187,7 +196,7 @@
             ,title: '用户数据表'
             ,cols: [[
                 {type: 'checkbox', fixed: 'left'}
-                ,{field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true}
+                ,{field:'id', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
                 ,{field:'name', title:'商品分类', width:240, edit: 'text'}
                 // ,{field:'email', title:'邮箱', width:150, edit: 'text', templet: function(res){
                 //     return '<em>'+ res.email +'</em>'
@@ -198,7 +207,7 @@
                 // ,{field:'experience', title:'积分', width:80, sort: true}
                 // ,{field:'ip', title:'IP', width:120}
                 // ,{field:'logins', title:'登入次数', width:100, sort: true}
-                ,{field:'time', title:'添加时间', width:120}
+                ,{field:'time', title:'添加时间', width:240}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]]
             ,page: true
@@ -227,36 +236,64 @@
             var data = obj.data;
             //console.log(obj)
             if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
+                layer.confirm('您真的要删除此分类吗？', function(index){
                     obj.del();
                     layer.close(index);
+
+                    //删除当行
+                    $.ajax({
+                        type:'get',
+                        url:'http://localhost:3008/_del',
+                        async:true,
+                        data:{
+                            'id':obj.data.id,
+                        },
+                        success:function(str){
+                            // console.log(str);
+                        }
+                    });
+
                 });
             }else if(obj.event === 'edit'){
                 layer.prompt({
                     formType: 2
-                    ,value: data.email
+                    ,value: data.name
                 }, function(value, index){
                     obj.update({
-                        email: value
+                        name: value
                     });
                 layer.close(index);
+
+                //修改数据库
+                var edit_time = new Date().toLocaleDateString();
+                // console.log(value,edit_time,obj.data.id);
+                $.ajax({
+                    type:'get',
+                    url:'http://localhost:3008/_edit',
+                    async:true,
+                    data:{
+                        'id':obj.data.id,
+                        'name':value,
+                        'time':edit_time
+                    },
+                    success:function(str){
+                        console.log(str);
+                    }
+                });
+
+
                 });
             }
         });
         });
-    </script>
 
-    <script type="text/html" id="toolbarDemo">
-        <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-        </div>
+        
     </script>
 
     <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs redact" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
+
 </body>
 </html>
