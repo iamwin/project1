@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Super 后台</title>
+    <title>商品列表</title>
     <link rel="stylesheet" href="../resources/layui/css/layui.css">
     <style type="text/css">
         .layui-nav-item>.frist_accordion{
@@ -145,6 +145,12 @@
         <!-- 内容主体区域 -->
             <div style="padding: 20px;">
             <!-- 内容主体区域 -->
+                <div class="demoTable">搜索商品名称：
+                    <div class="layui-inline">
+                    <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="请输入要搜索的商品名称">
+                    </div>
+                    <button class="layui-btn" data-type="reload">搜索</button>
+                </div>
                 <table class="layui-hide" id="test" lay-filter="test"></table>
             </div>
         </div>
@@ -172,8 +178,8 @@
         layui.use('element', function(){
             var element = layui.element;
 
-            var foot_time1 =  new Date().toLocaleDateString();//获取时间
-            var foot_time2 =  new Date().toLocaleTimeString();//获取时间
+            var foot_time1 =  new Date().toLocaleDateString();//年月日
+            var foot_time2 =  new Date().toLocaleTimeString();//时分秒
             $('.foot_time').html('日期：'+foot_time1+'&nbsp&nbsp&nbsp&nbsp'+foot_time2);//显示时间
             clearInterval(timer1);
             var timer1 = setInterval(function(){
@@ -238,7 +244,6 @@
         //监听行工具事件
         table.on('tool(test)', function(obj){
             var data = obj.data;
-            //console.log(obj)
             if(obj.event === 'del'){
                 layer.confirm('您真的要删除此商品吗？', function(index){
                     obj.del();
@@ -270,7 +275,6 @@
 
                 //修改数据库
                 var edit_time = new Date().toLocaleDateString();
-                // console.log(value,edit_time,obj.data.id);
                 $.ajax({
                     type:'get',
                     url:'http://localhost:3008/_edit',
@@ -281,14 +285,95 @@
                         'time':edit_time
                     },
                     success:function(str){
-                        console.log(str);
+                        // console.log(str);
                     }
                 });
 
                 });
+            }else if(obj.event === 'change'){
+                let change = $(this).parent().parent().prev().prev().children().html();
+                if(change=='未上架'){
+                    $(this).parent().parent().prev().prev().children().html('已上架');
+                    $.ajax({
+                        type:'get',
+                        url:'http://localhost:3008/_change',
+                        async:true,
+                        data:{
+                            'id':obj.data.id,
+                            'stage':'已上架'
+                        },
+                        success:function(str){
+                            // console.log(str);
+                        }
+                    });
+                }else{
+                    $(this).parent().parent().prev().prev().children().html('未上架');
+                    $.ajax({
+                        type:'get',
+                        url:'http://localhost:3008/_change',
+                        async:true,
+                        data:{
+                            'id':obj.data.id,
+                            'stage':'未上架'
+                        },
+                        success:function(str){
+                            // console.log(str);
+                        }
+                    });
+                }
             }
         });
         });
+        });
+    </script>
+
+    <!-- 搜索功能 -->
+    <script type="text/javascript">
+        layui.use('table', function(){
+            var table = layui.table;
+
+            //方法级渲染
+            table.render({
+                elem: '#LAY_table_user'
+                ,url: 'http://localhost:3008/_search'
+                ,cols: [[
+                  {checkbox: true, fixed: true}
+                  ,{field:'id', title: 'ID', width:80, sort: true, fixed: true}
+                  ,{field:'name', title: '商品名称', width:220}
+                  ,{field:'category', title: '分类', width:80}
+                  ,{field:'oldprice', title: '原价', width:80, sort: true}
+                  ,{field:'newprice', title: '现价', sort: true}
+                  ,{field:'number', title: '库存', width:80}
+                  ,{field:'stage', title: '状态', width:80}
+                  ,{field:'time', title: '添加时间', width:110}
+                  ,{field:'right', title: '操作', toolbar: '#barDemo', width:180}
+                ]]
+                ,id: 'testReload'
+                ,page: true
+                ,height: 315
+            });
+
+            var $ = layui.$, active = {
+                reload: function(){
+                    var demoReload = $('#demoReload');
+
+                    //执行重载
+                    table.reload('testReload', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            key: {
+                                id: demoReload.val()
+                            }
+                        }
+                    });
+                }
+            };
+            $('.demoTable .layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
         });
     </script>
 

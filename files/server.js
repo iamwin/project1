@@ -108,7 +108,7 @@ app.get('/_edit',function(req,res){
         user.update({
             id:edit_id
         },{$set:{name:edit_name,time:edit_time}},(err,result)=>{
-            console.log(result);
+            // console.log(result);
         })
 
     });
@@ -124,7 +124,7 @@ app.get('/_del',function(req,res){
         // console.log(edit_id,edit_name,edit_time);
 
         user.deleteOne({id:del_id},function(err,result){
-            console.log(result);
+            // console.log(result);
         })
 
     });
@@ -184,6 +184,29 @@ app.get('/goodslist',function(req,res){
     })
 
 })
+
+// 上/下架
+app.get('/_change',function(req,res){
+    let change_id = req.query.id*1;
+    let change_stage = req.query.stage;
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        if(err) throw err;
+        let db = database.db('win');
+        let user = db.collection('goodslist');
+        user.update({
+            id:change_id
+        },{$set:{stage:change_stage}},(err,result)=>{
+
+        });
+    });
+});
+
+//搜索功能
+app.get('./_search',(req,res)=>{
+    let search_key = req.query.key;
+    console.log(search_key);
+})
+
 
 app.listen(3008,function(){
     console.log('服务器已在3008端口起飞')
