@@ -15,6 +15,7 @@
 const express = require('express');
 const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 
 // 获取Mongo客户端
 const MongoClient = mongodb.MongoClient;
@@ -226,9 +227,24 @@ app.get('/_change',function(req,res){
     });
 });
 
-//添加商品
-app.get('/addgoods',function(req,res){
-    
+//渲染分类
+app.get('/cate',function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        let db = database.db('win');
+        let user = db.collection('goodscategory');
+        user.find().toArray(function(err,result){
+            var all_cate=[];
+            for(var i=0;i<result.length;i++){
+                all_cate.push(result[i].name);
+            }
+            res.send(all_cate);
+        });
+    });
+})
+
+// 添加商品
+app.post('/addgoods',function(req,res){
+    // console.log(req.Payload);
 })
 
 

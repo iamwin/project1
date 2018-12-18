@@ -352,56 +352,6 @@
         });
     </script>
 
-    <!-- 搜索功能 -->
-    <!-- <script type="text/javascript">
-        layui.use('table', function(){
-            var table = layui.table;
-
-            //方法级渲染
-            table.render({
-                elem: '#LAY_table_user'
-                ,url: 'http://localhost:3008/_search'
-                ,cols: [[
-                  {checkbox: true, fixed: true}
-                  ,{field:'id', title: 'ID', width:80, sort: true, fixed: true}
-                  ,{field:'name', title: '商品名称', width:220}
-                  ,{field:'category', title: '分类', width:80}
-                  ,{field:'oldprice', title: '原价', width:80, sort: true}
-                  ,{field:'newprice', title: '现价', sort: true}
-                  ,{field:'number', title: '库存', width:80}
-                  ,{field:'stage', title: '状态', width:80}
-                  ,{field:'time', title: '添加时间', width:110}
-                  ,{field:'right', title: '操作', toolbar: '#barDemo', width:180}
-                ]]
-                ,id: 'testReload'
-                ,page: true
-                ,height: 315
-            });
-
-            var $ = layui.$, active = {
-                reload: function(){
-                    var demoReload = $('#demoReload');
-
-                    //执行重载
-                    table.reload('testReload', {
-                        page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        ,where: {
-                            key: {
-                                id: demoReload.val()
-                            }
-                        }
-                    });
-                }
-            };
-            $('.demoTable .layui-btn').on('click', function(){
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        });
-    </script> -->
-
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
