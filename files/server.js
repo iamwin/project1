@@ -46,9 +46,10 @@ app.get('/goodscategory',function(req,res){
         let db = database.db('win');
         let user = db.collection('goodscategory');
         let count = 0;
-
         let page = req.query.page;
         let limit = req.query.limit;
+
+        //获取商品总数
         user.find().toArray(function(err2,result2){
             sum = result2.length;
             return sum;
@@ -61,34 +62,29 @@ app.get('/goodscategory',function(req,res){
         //         count:sum
         //     });
         // });
-
-        user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
-            // console.log(result);
-            let data;
-            if(err){
-                // console.log(666);
-                data={
-                    'code':1,
-                    'data':[],
-                    'msg':'没有商品',
-                    'count':pages
+            user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
+                // console.log(result);
+                let data;
+                if(err){
+                    // console.log(666);
+                    data={
+                        'code':1,
+                        'data':[],
+                        'msg':err,
+                        'count':pages
+                    }
+                }else{
+                    data = {
+                        'code':0,
+                        'data':result,
+                        'msg':'商品列表',
+                        'count':sum
+                    }
+                    
                 }
-            }else{
-                data = {
-                    'code':0,
-                    'data':result,
-                    'msg':'商品列表',
-                    'count':sum
-                }
-                
-            }
 
-            res.send(data);
-        });
-        
-        
-
-
+                res.send(data);
+            });
         database.close();
     })
 
@@ -140,6 +136,7 @@ app.get('/goodslist',function(req,res){
 
         let page = req.query.page;
         let limit = req.query.limit;
+        let key = req.query.key;
         user.find().toArray(function(err2,result2){
             sum = result2.length;
             return sum;
@@ -152,30 +149,58 @@ app.get('/goodslist',function(req,res){
         //         count:sum
         //     });
         // });
-
-        user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
-            // console.log(result);
-            let data;
-            if(err){
-                // console.log(666);
-                data={
-                    'code':1,
-                    'data':[],
-                    'msg':'没有商品',
-                    'count':pages
+        
+        //搜索功能
+        if(key){
+            user.find({id:(key.id)*1}).toArray((err,result)=>{
+                // console.log(result);
+                let data;
+                if(err){
+                    // console.log(666);
+                    data={
+                        'code':1,
+                        'data':[],
+                        'msg':'没有商品',
+                        'count':pages
+                    }
+                }else{
+                    data = {
+                        'code':0,
+                        'data':result,
+                        'msg':'商品列表',
+                        'count':sum
+                    }
+                    
                 }
-            }else{
-                data = {
-                    'code':0,
-                    'data':result,
-                    'msg':'商品列表',
-                    'count':sum
-                }
-                
-            }
 
-            res.send(data);
-        });
+                res.send(data);
+            });
+        }else{
+            user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
+                // console.log(result);
+                let data;
+                if(err){
+                    // console.log(666);
+                    data={
+                        'code':1,
+                        'data':[],
+                        'msg':'没有商品',
+                        'count':pages
+                    }
+                }else{
+                    data = {
+                        'code':0,
+                        'data':result,
+                        'msg':'商品列表',
+                        'count':sum
+                    }
+                    
+                }
+
+                res.send(data);
+            });
+        }
+        
         
         
 
@@ -201,10 +226,9 @@ app.get('/_change',function(req,res){
     });
 });
 
-//搜索功能
-app.get('./_search',(req,res)=>{
-    let search_key = req.query.key;
-    console.log(search_key);
+//添加商品
+app.get('/addgoods',function(req,res){
+    
 })
 
 

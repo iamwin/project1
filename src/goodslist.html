@@ -145,7 +145,7 @@
         <!-- 内容主体区域 -->
             <div style="padding: 20px;">
             <!-- 内容主体区域 -->
-                <div class="demoTable">搜索商品名称：
+                <div class="demoTable">搜索商品ID：
                     <div class="layui-inline">
                     <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="请输入要搜索的商品名称">
                     </div>
@@ -169,8 +169,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-        <button class="layui-btn layui-btn-sm addgoods">
-        <a href="addgoods.html" style="color:#fff">添加商品</a></button>
+        <a class="layui-btn layui-btn-sm addgoods" href="addgoods.html" style="color:#fff">添加商品</a>
     </script>
 
     <script>
@@ -192,6 +191,7 @@
             //点击退出按钮
             });
 
+            //渲染
             layui.use('table', function(){
             var table = layui.table;
   
@@ -220,7 +220,32 @@
                 ,{field:'time', title:'添加时间', width:110}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:180}
             ]]
+            ,id: 'testReload'
             ,page: true
+            
+        });
+
+        //搜索
+        var $ = layui.$, active = {
+                reload: function(){
+                    var demoReload = $('#demoReload');
+
+                    //执行重载
+                    table.reload('testReload', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where:{
+                            key: {
+                                id: demoReload.val()
+                            }
+                        }
+                    });
+                }
+            };
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
         });
       
           //头工具栏事件
@@ -328,7 +353,7 @@
     </script>
 
     <!-- 搜索功能 -->
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         layui.use('table', function(){
             var table = layui.table;
 
@@ -375,7 +400,7 @@
                 active[type] ? active[type].call(this) : '';
             });
         });
-    </script>
+    </script> -->
 
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
