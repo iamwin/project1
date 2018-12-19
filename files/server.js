@@ -16,6 +16,8 @@ const express = require('express');
 const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const http = require('http');
+const querystring = require('querystring');
 
 // 获取Mongo客户端
 const MongoClient = mongodb.MongoClient;
@@ -202,10 +204,6 @@ app.get('/goodslist',function(req,res){
             });
         }
         
-        
-        
-
-
         database.close();
     })
 
@@ -242,11 +240,27 @@ app.get('/cate',function(req,res){
     });
 })
 
-// 添加商品
-app.post('/addgoods',function(req,res){
-    // console.log(req.Payload);
+// 上传图片
+app.post('/addpic',function(req,res){
 })
 
+//添加商品
+let urlencodedParser = bodyParser.urlencoded({ extended: false })//中间件，用于解析POST请求传来的数据
+app.post('/addgoods',urlencodedParser,function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        // console.log(req.body);
+        let db = database.db('win');
+        let user = db.collection('goodslist');
+        user.find({}).sort({id:-1}).limit(1).toArray((err,result)=>{
+            var add_id=result[0].id;
+            add_id++;
+            Object.assign(req.body,{id:add_id});//将id对象添加到req.body对象中
+            user.insert(req.body,(err2,result2)=>{
+                res.send(result2);
+            })
+        })
+    });
+})
 
 app.listen(3008,function(){
     console.log('服务器已在3008端口起飞')

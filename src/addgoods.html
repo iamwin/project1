@@ -197,7 +197,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">库存：</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="username" lay-verify="required" placeholder="请输入库存数量" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" lay-verify="required" placeholder="请输入库存数量" autocomplete="off" class="layui-input add_number">
                     </div>
                 </div>
                 
@@ -288,7 +288,7 @@
             //多图片上传
             upload.render({
                 elem: '#test2'
-                ,url: 'http://localhost:3008/addgoods'
+                ,url: 'http://localhost:3008/addpic'
                 ,multiple: true
                 ,before: function(obj){
                 //预读本地文件示例，不支持ie8
@@ -321,21 +321,8 @@
         });
 
         //提交
+        var addpict=[];
         $('.add_btn').click(function(){
-            $.ajax({
-                type:"get",
-                url:"http://localhost:3008/cate",
-                async:"true",
-                data:{
-                },
-                success:function(str){
-                    var res = str.map(function(item){
-                        return `<option>${item}</option>`
-                    }).join('');
-                    res='<option>选择商品分类</option>'+res;
-                    $('.add_categroy').html(res);
-                }
-            });
             var add_name = $('.add_name').val();//商品名称
             var add_categroy = $('.add_categroy option:selected').html();//商品分类
             var add_oldprice = $('.add_oldprice').val();//原价
@@ -344,13 +331,55 @@
             var add_explain = $('.add_explain').val();//商品说明
             var add_time = new Date().toLocaleDateString().split('/');
             var add_time = add_time[0]+'-'+add_time[1]+'-'+add_time[2]//添加时间
-            var add_img = $('#demo2 .add_img');
-            console.log(add_img);
+            var add_img = $('.add_img');
+            for(var j=0;j<add_img.length;j++){
+                var Arr=$('#demo2').find('img').eq(j).attr('alt')
+                addpict.push(Arr);
+            }
+            // console.log(addpict);添加图片
+            var add_number = $('.add_number').val();//库存
 
+            if(add_name&&add_categroy&&add_oldprice&&add_newprice&&add_number&&addpict&&add_explain){
+                if(add_categroy!='选择商品分类'&&add_oldprice>=add_newprice){
+                    $.ajax({
+                        type:"post",
+                        url:"http://localhost:3008/addgoods",
+                        async:"true",
+                        data:{
+                            'name':add_name,
+                            'categroy':add_categroy,
+                            'oldprice':add_oldprice,
+                            'newprice':add_newprice,
+                            'number':add_number,
+                            'stage':add_stage,
+                            'picture':addpict,
+                            'explain':add_explain,
+                            'time':add_time
+                        },
+                        success:function(str){
+                            if(str){
+                                location.href='goodslist.html';
+                            }
+                        }
+                    });
+                }else{
+                    alert('请输入正确的信息');
+                }
+            }else{
+                alert('请将信息补充完整');
+            }
+            
+            // console.log(add_name);
+            // console.log(add_categroy);
+            // console.log(add_oldprice);
+            // console.log(add_newprice);
+            // console.log(add_number);
+            // console.log(add_stage);
+            // console.log(addpict);
+            // console.log(add_explain);
+            // console.log(add_time);
 
-
-
-
+            
 
 
         })
