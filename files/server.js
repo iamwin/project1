@@ -262,6 +262,47 @@ app.post('/addgoods',urlencodedParser,function(req,res){
     });
 })
 
+//判断添加的分类是否重复
+app.get('/addcate_name',function(req,res){
+    let addcate_name = req.query.name;
+    // console.log(addcate_name);
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        //检测是否有同名
+        let db = database.db('win');
+        let user = db.collection('goodscategory');
+        // console.log(addcate_name);
+        user.findOne({'name':addcate_name},function(err,result){
+            console.log(result);
+            if(result){
+                res.send('1');
+            }else{
+                res.send('0');
+            }
+        })
+    })
+})
+
+//添加分类
+app.get('/addcate',function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        // console.log(req.body);
+        let db = database.db('win');
+        let user = db.collection('goodscategory');
+        let addcate_name = req.query.name;
+        let addcate_time = req.query.time;
+        user.find({}).sort({id:-1}).limit(1).toArray((err,result)=>{
+            var add_id=result[0].id;
+            add_id++;
+            // console.log(add_id,addcate_name,addcate_time);
+            user.insert({'id':add_id,'name':addcate_name,'time':addcate_time},function(err2,result2){
+                res.send(result2);
+            })
+
+        })
+    });
+})
+
+
 app.listen(3008,function(){
     console.log('服务器已在3008端口起飞')
 });
