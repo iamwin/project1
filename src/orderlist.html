@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Super 后台</title>
+    <title>订单列表</title>
     <link rel="stylesheet" href="../resources/layui/css/layui.css">
     <style type="text/css">
         .layui-nav-item>.frist_accordion{
@@ -25,6 +25,15 @@
         }
         .layui-header>.head_show>a:hover{
             color: rgb(0, 150, 136);
+        }
+        .layui-header .head_show .dark{
+            color: #888;
+        }
+        .layui-header>.head_show>span{
+            color: #fff;
+        }
+        #user_content .layui-form{
+            width: 575px;
         }
     </style>
 </head>
@@ -61,7 +70,9 @@
             
             <!-- 面包屑 -->
             <div class="head_show">
-                <a href="javascript:;">首页</a>
+                <a class="dark" href="backstage.html">首页</a>
+                <span>/</span>
+                <a href="orderlist.html">订单列表</a>
                 <span>/</span>
             </div>
             <ul class="layui-nav layui-layout-right">
@@ -88,44 +99,45 @@
             <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
                 <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item">
                     <!-- 第一块 -->
                         <a class="frist_accordion" href="javascript:;">商品管理</a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a class="goodscategory" href="javascript:;">商品分类</a>
+                                <a class="goodscategory" href="goodscategory.html">商品分类</a>
                             </dd>
                             <dd>
-                                <a class="goodslist" href="javascript:;">商品列表</a>
-                            </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表三</a>
+                                <a class="goodslist" href="goodslist.html">商品列表</a>
                             </dd>
                             <dd>
-                                <a href="">超链接</a>
-                            </dd> -->
+                                <a href="addgoods.html">添加商品</a>
+                            </dd>
+                            <dd>
+                                <a href="addcategory.html">添加分类</a>
+                            </dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item">
                     <!-- 第二块 -->
                         <a class="frist_accordion" href="javascript:;">用户管理</a>
                         <dl class="layui-nav-child">
-                            <dd class="layui-this">
-                                <a class="userlist" href="javascript:;">用户列表</a>
-                            </dd>
-                            <!-- <dd>
-                                <a href="javascript:;">列表二</a>
+                            <dd>
+                                <a class="userlist" href="userlist.html">用户列表</a>
                             </dd>
                             <dd>
+                                <a href="addusers.html">添加用户</a>
+                            </dd>
+                            <!-- <dd>
                                 <a href="">超链接</a>
                             </dd> -->
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item layui-nav-itemed">
+                    <!-- 第三块 -->
                         <a class="frist_accordion" href="javascript:;">订单管理</a>
                         <dl class="layui-nav-child">
-                            <dd>
-                                <a class="orderlist" href="javascript:;">订单列表</a>
+                            <dd class="layui-this">
+                                <a class="orderlist" href="orderlist.html">订单列表</a>
                             </dd>
                         </dl>
                     </li>
@@ -138,9 +150,9 @@
 
         <div class="layui-body">
         <!-- 内容主体区域 -->
-            <div style="padding: 20px;">
+            <div id="user_content" style="padding: 20px;">
             <!-- 内容主体区域 -->
-                
+                <table class="layui-hide" id="test"></table>
             </div>
         </div>
 
@@ -152,6 +164,7 @@
     
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="../resources/layui/layui.js"></script>
+
     <script>
         //JavaScript代码区域
         layui.use('element', function(){
@@ -170,33 +183,28 @@
             $('.log_out').click(function(){
             //点击退出按钮
             });
-
-            $('.body_top').find('div').click(function(){
-            //body区右侧菜单
-                $('.body_top').find('div').css('border-bottom','4px solid #fff')
-                $(this).css('border-bottom','6px solid #009688')
-            });
-
-            //跳转商品分类页面
-            $('.goodscategory').click(function(){
-                location.href = 'goodscategory.html'
-            })
-
-            //跳转商品列表页面
-            $('.goodslist').click(function(){
-                location.href = 'goodslist.html'
-            })
-
-            //跳转用户列表页面
-            $('.userlist').click(function(){
-                location.href = 'userlist.html'
-            })
-
-            //跳转订单列表页面
-            $('.orderlist').click(function(){
-                location.href = 'orderlist.html'
-            })
         });
     </script>
+    
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
+            
+            table.render({
+            elem: '#test'
+            ,url:'http://localhost:3008/orderlist'
+            ,cols: [[
+                {type:'checkbox'}
+                ,{field:'id', width:80, title: 'id', sort: true}
+                ,{field:'product-name', width:200, title: '商品名称'}
+                ,{field:'quantity', width:80, title: '数量', sort: true}
+                ,{field:'unit-price', width:80, title: '单价', sort: true}
+                ,{field:'amount', width:80, title: '总价', sort: true}
+            ]]
+            ,page: true
+            });
+        });
+    </script>
+    
 </body>
 </html>

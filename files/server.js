@@ -113,7 +113,7 @@ app.get('/_edit',function(req,res){
     });
 });
 
-//删除
+//删除分类
 app.get('/_del',function(req,res){
     let del_id = req.query.id*1;
     MongoClient.connect('mongodb://localhost:27017',function(err,database){
@@ -123,7 +123,7 @@ app.get('/_del',function(req,res){
         // console.log(edit_id,edit_name,edit_time);
 
         user.deleteOne({id:del_id},function(err,result){
-            // console.log(result);
+
         })
 
     });
@@ -302,6 +302,143 @@ app.get('/addcate',function(req,res){
     });
 })
 
+//用户列表
+app.get('/user',function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        let db = database.db('win');
+        let user = db.collection('user');
+        let count = 0;
+        let page = req.query.page;
+        let limit = req.query.limit;
+
+        user.find().toArray(function(err2,result2){
+            sum = result2.length;
+            return sum;
+        });
+
+        user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
+            // console.log(result);
+            let data;
+            if(err){
+                // console.log(666);
+                data={
+                    'code':1,
+                    'data':[],
+                    'msg':'没有商品',
+                    'count':pages
+                }
+            }else{
+                data = {
+                    'code':0,
+                    'data':result,
+                    'msg':'商品列表',
+                    'count':sum
+                }
+                
+            }
+
+            res.send(data);
+        });
+    }); 
+});
+
+//删除用户
+app.get('/user_del',function(req,res){
+    let del_id = req.query.id*1;
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        if(err) throw err;
+        let db = database.db('win');
+        let user = db.collection('user');
+        // console.log(edit_id,edit_name,edit_time);
+
+        user.deleteOne({id:del_id},function(err,result){
+
+        })
+
+    });
+});
+
+//判断添加的用户是否重复
+app.get('/adduser_name',function(req,res){
+    let adduser_name = req.query.name;
+    // console.log(addcate_name);
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        //检测是否有同名
+        let db = database.db('win');
+        let users = db.collection('user');
+        // console.log(adduser_name);
+        users.findOne({'name':adduser_name},function(err,result){
+            // console.log(result);
+            if(result){
+                res.send('1');
+            }else{
+                res.send('0');
+            }
+        })
+    })
+})
+
+//添加用户
+app.get('/adduser',function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        // console.log(req.body);
+        let db = database.db('win');
+        let users = db.collection('user');
+        let addcate_name = req.query.name;
+        let addcate_time = req.query.time;
+        let addcate_pass = req.query.pass;
+        addcate_pass = addcate_pass*1;
+        users.find({}).sort({id:-1}).limit(1).toArray((err,result)=>{
+            var add_id=result[0].id;
+            add_id++;
+            console.log(add_id,addcate_name,addcate_time,addcate_pass);
+            users.insert({'id':add_id,'name':addcate_name,'password':addcate_pass,'time':addcate_time},function(err2,result2){
+                res.send(result2);
+            })
+
+        })
+    });
+})
+
+//订单列表
+app.get('/orderlist',function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        let db = database.db('win');
+        let user = db.collection('orderlist');
+        let count = 0;
+        let page = req.query.page;
+        let limit = req.query.limit;
+
+        user.find().toArray(function(err2,result2){
+            sum = result2.length;
+            return sum;
+        });
+
+        user.find().skip((page-1)*limit*1).limit(limit*1).toArray((err,result)=>{
+            // console.log(result);
+            let data;
+            if(err){
+                // console.log(666);
+                data={
+                    'code':1,
+                    'data':[],
+                    'msg':'没有商品',
+                    'count':pages
+                }
+            }else{
+                data = {
+                    'code':0,
+                    'data':result,
+                    'msg':'商品列表',
+                    'count':sum
+                }
+                
+            }
+
+            res.send(data);
+        });
+    }); 
+});
 
 app.listen(3008,function(){
     console.log('服务器已在3008端口起飞')
