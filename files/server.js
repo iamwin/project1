@@ -440,6 +440,27 @@ app.get('/orderlist',function(req,res){
     }); 
 });
 
+//登录
+let urlencodedParser2 = bodyParser.urlencoded({ extended: false })//中间件，用于解析POST请求传来的数据
+app.post('/login',urlencodedParser2,function(req,res){
+    MongoClient.connect('mongodb://localhost:27017',function(err,database){
+        // console.log(req.body);
+        let db = database.db('win');
+        let user = db.collection('login');
+        let username = req.body.username;
+        let password = req.body.userpass;
+        // console.log(username);
+        // console.log(password);
+        user.find({'username':username,'password':password}).toArray(function(err,result){
+            if(result){
+                res.send({'code':1})
+            }else{
+                res.send({'code':0})
+            }
+        })
+    });
+})
+
 app.listen(3008,function(){
     console.log('服务器已在3008端口起飞')
 });
